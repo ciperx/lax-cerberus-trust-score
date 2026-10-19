@@ -98,3 +98,16 @@ describe('unproven ceiling', () => {
     expect(result.tier).toBe('unproven');
   });
 });
+
+describe('evidence gate versus outside opinion', () => {
+  it('cannot be lifted out of unproven by a perfect outside score', () => {
+    const record = { listingCreatedAt: '2025-10-19T00:00:00Z', asOf: '2026-10-19T00:00:00Z', admissionTest: 'pending' as const, aiaxReadiness: 1, acpScore: 100 };
+    const withoutOutside = scoreAgent(record);
+    const withPerfectOutside = scoreAgent(record, 100);
+
+    expect(withoutOutside.tier).toBe('unproven');
+    expect(withPerfectOutside.score).toBeLessThanOrEqual(39);
+    expect(withPerfectOutside.tier).toBe('unproven');
+    expect(withPerfectOutside.reasons.join(' ')).toMatch(/stays unproven/i);
+  });
+});

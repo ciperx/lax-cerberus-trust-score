@@ -102,9 +102,10 @@ describe('reasons formatting', () => {
     expect(all).not.toContain('Infinity');
   });
 
-  it('keeps reasons free of long dash codepoints in the source strings', () => {
+  it('keeps reasons free of long dash codepoints', () => {
     const flat = samples.flat();
-    expect(flat.every((reason) => typeof reason === 'string')).toBe(true);
+    const offenders = flat.filter((reason) => /[\u2013\u2014]/.test(reason));
+    expect(offenders).toEqual([]);
     expect(flat.length).toBeGreaterThan(0);
   });
 });

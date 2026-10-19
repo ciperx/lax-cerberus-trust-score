@@ -81,7 +81,17 @@ export function scoreAgent(record?: AgentRecord | null, outside?: number | null)
     score = limited;
   }
 
-  const finalScore = clamp(Math.round(score), SCORE_MIN, SCORE_MAX);
+  // The evidence gate is the last word, not the first. Blending an outside
+  // opinion used to lift an unevidenced listing out of unproven, which is the
+  // one thing this score exists to prevent.
+  let finalScore = clamp(Math.round(score), SCORE_MIN, SCORE_MAX);
+
+  if (!hasEvidence(safeRecord) && finalScore > UNPROVEN_CEILING) {
+    finalScore = UNPROVEN_CEILING;
+    reasons.push(
+      `The blended score of ${score} was held at ${UNPROVEN_CEILING} because a listing with no delivery decisions and no completed admission test stays unproven no matter what a second opinion says.`,
+    );
+  }
 
   return {
     score: finalScore,

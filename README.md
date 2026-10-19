@@ -75,7 +75,7 @@ The raw sum is rounded and clamped to 0..100. Integer output only.
 
 `unproven` means "nobody has judged this listing yet". A record counts as evidenced once it has at least one delivery decision (accepted or rejected) or a completed admission test (`pass` or `fail`).
 
-Without evidence the score is capped at 39 and the tier is `unproven`, no matter how good the self reported readiness looks. An empty record therefore returns `{ score: 0, tier: 'unproven' }` instead of being refused. A failed admission test counts as evidence (somebody judged it), so it scores and can still land in `unproven` on points alone.
+Without evidence the score is capped at 39 and the tier is `unproven`, no matter how good the self reported readiness looks, and the cap is applied last so a perfect outside opinion cannot lift an unevidenced listing out of `unproven`. An empty record therefore returns `{ score: 0, tier: 'unproven' }` instead of being refused. A failed admission test counts as evidence (somebody judged it), so it scores and can still land in `unproven` on points alone.
 
 ## Outside score and the one step rule
 
@@ -128,7 +128,7 @@ Order: age, accepted, rejected, admission, AIAX, ACP, evidence gate, outside ble
 ## Tests
 
 ```bash
-npx vitest run    # 176 tests, 7 files
+npx vitest run    # 177 tests, 7 files
 npx tsc --noEmit  # type check
 ```
 
@@ -145,4 +145,4 @@ FAIL  test/outside.test.ts > outside score moves the tier by at most one step > 
 AssertionError: expected 2 to be less than or equal to 1
 ```
 
-Restoring the comparison returns the suite to 176 passing tests. Raw before and after output is kept in `MUTATION-before.txt` and `MUTATION-after.txt`.
+Restoring the comparison returns the suite to 177 passing tests, which is the count CI reports.
